@@ -21,14 +21,14 @@ export default function Home() {
         <GoogleButton onClick={() => signIn('google')} />
       ) : (
         <div>
-          <p>Logged in as {session.user.name}</p>
-          <button onClick={() => signOut()}>Sign Out</button>
-          <a href="/addWine">Add a Wine</a>
+            <p>Logged in as {session.user.name}</p>
+            <button onClick={() => signOut()}>Sign Out</button>
+            <a href="/addWine">Add a Wine</a>
 
           <h2>Wines</h2>
           {wines.map((wine) => (
             <div key={wine._id}>
-              <strong>{wine.name}</strong> - {wine.notes} ({wine.rating})
+              <strong>{wine.name}</strong> - <em>{wine.grape}</em> - {wine.notes} ({wine.rating}) - <em>{wine.username}</em>
             </div>
           ))}
         </div>

@@ -15,12 +15,14 @@ export default async function handler(req, res) {
 
   if (req.method === "POST") {
     if (!session) return res.status(401).json({ error: "Not logged in" });
-    const { name, notes, rating } = req.body;
+    const { name, grape, notes, rating } = req.body;
     const newWine = new Wine({
       name,
+      grape,
       notes,
       rating,
-      userId: session.userId
+      userId: session.userId,
+      username: session.user.name
     });
     await newWine.save();
     return res.status(201).json(newWine);

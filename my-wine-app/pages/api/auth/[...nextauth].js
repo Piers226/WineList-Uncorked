@@ -15,14 +15,11 @@ export const authOptions = {
     async signIn({ user, account, profile }) {
       // user: { name, email, image }
       await connectToDB();
-      if (user.email) {
-        // Use findOneAndUpdate to upsert (create if doesn't exist)
-        await User.findOneAndUpdate(
-          { email: user.email },
-          { name: user.name, email: user.email },
-          { upsert: true, new: true }
-        );
-      }
+      await User.findOneAndUpdate(
+        { userId: profile.sub },
+        { userName: user.name, email: user.email },
+        { upsert: true, new: true }
+      );
       return true;
     },
     async session({ session, token }) {
