@@ -1,6 +1,8 @@
 // pages/api/auth/[...nextauth].js
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
+import { connectToDB } from '../../../lib/mongodb';
+import User from '../../../models/User';
 
 export const authOptions = {
   providers: [
@@ -10,10 +12,20 @@ export const authOptions = {
     })
   ],
   callbacks: {
+    async signIn({ user, account, profile }) {
+      // user: { name, email, image }
+      await connectToDB();
+      if (user.email) {
+        // Use findOneAndUpdate to upsert (create if doesn't exist)
+        await User.findOneAndUpdate(
+          { email: user.email },
+          { name: user.name, email: user.email },
+          { upsert: true, new: true }
+        );
+      }
+      return true;
+    },
     async session({ session, token }) {
-      // attach user id (from token) if needed
-      // but Google doesn't always return a user ID
-      // use token.sub as user id (google unique id)
       session.userId = token.sub; 
       return session;
     }
