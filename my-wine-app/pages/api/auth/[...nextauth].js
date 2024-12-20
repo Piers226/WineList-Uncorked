@@ -18,7 +18,7 @@ export const authOptions = {
         // Upsert user (create if not exists)
         await User.findOneAndUpdate(
           { userId: profile.sub }, // Match by Google user ID
-          { userName: user.name, email: user.email }, // Update fields
+          { userName: user.name, email: user.email, savedWines: [] }, // Update fields
           { upsert: true, new: true } // Create if doesn't exist
         );
         return true; // Sign-in successful

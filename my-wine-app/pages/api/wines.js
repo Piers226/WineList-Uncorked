@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "./auth/[...nextauth]";
 import { connectToDB } from "../../lib/mongodb";
 import Wine from "../../models/Wine";
+import User from "../../models/User";
 
 export default async function handler(req, res) {
   const session = await getServerSession(req, res, authOptions);
