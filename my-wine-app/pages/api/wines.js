@@ -25,6 +25,12 @@ export default async function handler(req, res) {
       username: session.user.name
     });
     await newWine.save();
+    // Automatically save the wine for the user
+    await User.findOneAndUpdate(
+        { userId: session.userId },
+        { $addToSet: { savedWines: newWine._id } },
+        { new: true }
+      );
     return res.status(201).json(newWine);
   }
 

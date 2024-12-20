@@ -17,7 +17,7 @@ export const authOptions = {
       await connectToDB();
       await User.findOneAndUpdate(
         { userId: profile.sub },
-        { userName: user.name, email: user.email },
+        { userName: user.name, email: user.email, savedWines: [] },
         { upsert: true, new: true }
       );
       return true;
