@@ -1,5 +1,6 @@
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import GoogleButton from 'react-google-button';
 import Link from "next/link";
 
@@ -7,6 +8,7 @@ export default function Home() {
   const { data: session } = useSession();
   const [wines, setWines] = useState([]);
   const [savedWineIds, setSavedWineIds] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
     if (session) {
@@ -65,13 +67,15 @@ export default function Home() {
           <h2>Recently added</h2>
           {wines.map((wine) => (
             <div key={wine._id} style={{ marginBottom: "10px", padding: "0 20px" }}>
-              <strong>{wine.name}</strong> - {wine.grape} - {wine.notes} (
-              {wine.rating})
+              <strong>{wine.display_name}</strong> - {wine.wine} - {wine.region} ({wine.rating})
               {savedWineIds.includes(wine._id) ? (
                 <span style={{ color: "green" }}> ✔</span>
               ) : (
                 <button onClick={() => saveWine(wine._id)}>Save</button>
               )}
+              <button onClick={() => router.push(`/addReview?wineId=${wine._id}`)}>
+                Add Review
+              </button>
             </div>
           ))}
         </div>

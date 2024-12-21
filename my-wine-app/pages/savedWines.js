@@ -33,7 +33,7 @@ export default function SavedWines() {
       <ul>
         {savedWines.map((wine) => (
           <li key={wine._id}>
-            {wine.name} ({wine.grape}) - {wine.rating} - {wine.notes} - by {wine.username}
+            <strong>{wine.display_name}</strong> - {wine.wine} - {wine.region} ({wine.rating})
             <button onClick={() => removeWine(wine._id)}>Remove</button>
           </li>
         ))}

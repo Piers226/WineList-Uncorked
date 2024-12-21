@@ -34,7 +34,7 @@ export default function TopWines() {
       <ul>
         {wines.map((wine) => (
           <li key={wine._id}>
-            {wine.name} ({wine.grape}) - {wine.rating}
+            <strong>{wine.display_name}</strong> - {wine.wine} - {wine.region} ({wine.rating})
             {savedWineIds.includes(wine._id) ? (
                 <span style={{ color: "green" }}> ✔</span>
               ) : (

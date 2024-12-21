@@ -7,34 +7,21 @@ import { useRouter } from "next/router";
 export default function AddWine() {
   const { data: session } = useSession();
   const router = useRouter();
-  const [name, setName] = useState("");
-  const [grape, setGrape] = useState("");
-  const [notes, setNotes] = useState("");
+
+  // State for wine fields
+  const [display_name, setDisplayName] = useState("");
+  const [producer_name, setProducerName] = useState("");
+  const [wine, setWine] = useState("");
+  const [country, setCountry] = useState("");
+  const [region, setRegion] = useState("");
+  const [sub_region, setSubRegion] = useState("");
+  const [color, setColor] = useState("");
+  const [type, setType] = useState("");
+  const [general_notes, setGeneralNotes] = useState("");
   const [rating, setRating] = useState("");
 
-
-  const grapesList = [
-    "Cabernet Sauvignon",
-    "Merlot",
-    "Pinot Noir",
-    "Syrah/Shiraz",
-    "Zinfandel",
-    "Sangiovese",
-    "Nebbiolo",
-    "Tempranillo",
-    "Grenache",
-    "Malbec",
-    "Chardonnay",
-    "Sauvignon Blanc",
-    "Riesling",
-    "Pinot Grigio/Pinot Gris",
-    "Gewürztraminer",
-    "Viognier",
-    "Chenin Blanc",
-    "Semillon",
-    "Muscat",
-    "Albariño",
-  ];
+  const colors = ["Red", "White", "Rosé", "Sparkling"];
+  const types = ["Still", "Sparkling", "Dessert", "Fortified"];
 
   if (!session) {
     return (
@@ -46,21 +33,39 @@ export default function AddWine() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    
     // Input validation
-    if (!name || !grape || !rating) {
-      alert("All fields are required!");
+    if (!display_name || !producer_name || !rating) {
+      alert("Display Name, Producer Name, and Rating are required!");
       return;
     }
-
-    if (rating < 0 || rating > 100) {
-      alert("Rating must be between 0 and 100.");
+  
+    const parsedRating = parseFloat(rating).toFixed(2); // Ensure two decimal places
+  
+    if (parsedRating < 0 || parsedRating > 10) {
+      alert("Rating must be between 0 and 10.");
       return;
     }
+  
+    const newWine = {
+      display_name,
+      producer_name,
+      wine,
+      country,
+      region,
+      sub_region,
+      color,
+      type,
+      general_notes,
+      rating: Number(parsedRating), // Ensure it's stored as a Number
+    };
+  
     const res = await fetch("/api/wines", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, notes, grape, rating: parseInt(rating) }),
+      body: JSON.stringify(newWine),
     });
+  
     if (res.ok) {
       router.push("/");
     } else {
@@ -73,32 +78,69 @@ export default function AddWine() {
       <h1>Add a Wine</h1>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Name:</label>
-          <input value={name} onChange={(e) => setName(e.target.value)} />
+          <label>Display Name:</label>
+          <input
+            value={display_name}
+            onChange={(e) => setDisplayName(e.target.value)}
+          />
         </div>
         <div>
-          <label>Grape:</label>
-          <select value={grape} onChange={(e) => setGrape(e.target.value)}>
-            <option value="">Select a grape</option>
-            {grapesList.map((grapeOption) => (
-              <option key={grapeOption} value={grapeOption}>
-                {grapeOption}
+          <label>Producer Name:</label>
+          <input
+            value={producer_name}
+            onChange={(e) => setProducerName(e.target.value)}
+          />
+        </div>
+        <div>
+          <label>Wine:</label>
+          <input value={wine} onChange={(e) => setWine(e.target.value)} />
+        </div>
+        <div>
+          <label>Country:</label>
+          <input value={country} onChange={(e) => setCountry(e.target.value)} />
+        </div>
+        <div>
+          <label>Region:</label>
+          <input value={region} onChange={(e) => setRegion(e.target.value)} />
+        </div>
+        <div>
+          <label>Sub-Region:</label>
+          <input
+            value={sub_region}
+            onChange={(e) => setSubRegion(e.target.value)}
+          />
+        </div>
+        <div>
+          <label>Color:</label>
+          <select value={color} onChange={(e) => setColor(e.target.value)}>
+            <option value="">Select a color</option>
+            {colors.map((option) => (
+              <option key={option} value={option}>
+                {option}
               </option>
             ))}
           </select>
-          {grape === "Other" && (
-            <div>
-              <label>Specify Grape:</label>
-              <input value={grape} onChange={(e) => setGrape(e.target.value)} />
-            </div>
-          )}
         </div>
         <div>
-          <label>Notes:</label>
-          <input value={notes} onChange={(e) => setNotes(e.target.value)} />
+          <label>Type:</label>
+          <select value={type} onChange={(e) => setType(e.target.value)}>
+            <option value="">Select a type</option>
+            {types.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
-          <label>Rating (0-100):</label>
+          <label>General Notes:</label>
+          <textarea
+            value={general_notes}
+            onChange={(e) => setGeneralNotes(e.target.value)}
+          />
+        </div>
+        <div>
+          <label>Rating (0-10):</label>
           <input
             type="number"
             value={rating}

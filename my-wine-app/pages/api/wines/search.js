@@ -8,8 +8,8 @@ export default async function handler(req, res) {
   const { query } = req.query;
   const wines = await Wine.find({
     $or: [
-      { name: { $regex: query, $options: "i" } }, // case-insensitive search
-      { grape: { $regex: query, $options: "i" } },
+      { display_name: { $regex: query, $options: "i" } }, // case-insensitive search
+      { wine: { $regex: query, $options: "i" } },
     ],
   });
 
