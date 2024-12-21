@@ -13,12 +13,13 @@ export const authOptions = {
   ],
   callbacks: {
     async signIn({ user, account, profile }) {
+      
       try {
         await connectToDB(); // Connect to MongoDB
         // Upsert user (create if not exists)
         await User.findOneAndUpdate(
           { userId: profile.sub }, // Match by Google user ID
-          { userName: user.name, email: user.email, savedWines: [] }, // Update fields
+          { userName: user.name, email: user.email}, // Update fields
           { upsert: true, new: true } // Create if doesn't exist
         );
         return true; // Sign-in successful
