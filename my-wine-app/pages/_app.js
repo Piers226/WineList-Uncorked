@@ -1,5 +1,6 @@
 import { SessionProvider } from "next-auth/react";
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
+import Head from "next/head";
 
 const theme = createTheme({
   palette: {
@@ -7,7 +8,7 @@ const theme = createTheme({
     secondary: { main: "#1E463F" },
     background: {
       default: "#f9f9f9", // Default page background color
-      paper: "#ffffff",   // Background color for cards, modals, etc.
+      paper: "#ffffff", // Background color for cards, modals, etc.
     },
     text: {
       primary: "#333333", // Default text color
@@ -60,13 +61,23 @@ const theme = createTheme({
   },
 });
 
-export default function App({ Component, pageProps: { session, ...pageProps } }) {
+export default function App({
+  Component,
+  pageProps: { session, ...pageProps },
+}) {
   return (
-    <SessionProvider session={session}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Component {...pageProps} />
-      </ThemeProvider>
-    </SessionProvider>
+    <>
+      <Head>
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+      </Head>
+      <SessionProvider session={session}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </SessionProvider>
+    </>
   );
 }

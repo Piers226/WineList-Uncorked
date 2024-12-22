@@ -77,6 +77,14 @@ export default function SearchWines() {
                     {wine.rating ? `${wine.rating}/10` : "N/A"}
                   </Typography>
                   <Box mt={2} display="flex" justifyContent="space-between">
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={() => router.push(`/wines/${wine._id}`)}
+                      sx={{ mr: 1 }}
+                    >
+                      View Details
+                    </Button>
                     {savedWineIds.includes(wine._id) ? (
                       <Button variant="outlined" disabled>
                         Saved ✔
@@ -93,7 +101,9 @@ export default function SearchWines() {
                     <Button
                       variant="contained"
                       color="primary"
-                      onClick={() => router.push(`/addReview?wineId=${wine._id}`)}
+                      onClick={() =>
+                        router.push(`/addReview?wineId=${wine._id}`)
+                      }
                     >
                       Add Review
                     </Button>
