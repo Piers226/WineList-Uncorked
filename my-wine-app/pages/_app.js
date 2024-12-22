@@ -3,8 +3,8 @@ import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 
 const theme = createTheme({
   palette: {
-    primary: { main: "#0070f3" },
-    secondary: { main: "#f50057" },
+    primary: { main: "#B09C94" },
+    secondary: { main: "#1E463F" },
     background: {
       default: "#f9f9f9", // Default page background color
       paper: "#ffffff",   // Background color for cards, modals, etc.
@@ -41,9 +41,9 @@ const theme = createTheme({
           padding: "8px 16px",
         },
         containedPrimary: {
-          backgroundColor: "#0070f3",
+          backgroundColor: "##B09C94",
           "&:hover": {
-            backgroundColor: "#005bb5",
+            backgroundColor: "#704F42",
           },
         },
       },

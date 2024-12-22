@@ -42,7 +42,7 @@ export default function Home() {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            Wine Reviewer
+            Uncorked
           </Typography>
           {!session ? (
             <Button color="inherit" onClick={() => signIn("google")}>
@@ -61,7 +61,7 @@ export default function Home() {
         {!session ? (
           <Box textAlign="center">
             <Typography variant="h5" gutterBottom>
-              Welcome to Wine Reviewer
+              Welcome to Uncorked
             </Typography>
             <GoogleButton onClick={() => signIn("google")} />
           </Box>
