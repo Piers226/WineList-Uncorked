@@ -1,8 +1,15 @@
-/* eslint-disable */
-
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import {
+  Container,
+  Typography,
+  TextField,
+  Button,
+  Box,
+  Card,
+  CardContent,
+} from "@mui/material";
 
 export default function AddReview() {
   const { data: session } = useSession();
@@ -14,9 +21,14 @@ export default function AddReview() {
 
   if (!session) {
     return (
-      <p>
-        You must be logged in to add a review. <a href="/">Back Home</a>
-      </p>
+      <Container style={{ marginTop: "20px" }}>
+        <Typography variant="h5" align="center">
+          You must be logged in to add a review.{" "}
+          <Button onClick={() => router.push("/")} variant="contained" color="primary">
+            Back Home
+          </Button>
+        </Typography>
+      </Container>
     );
   }
 
@@ -31,7 +43,7 @@ export default function AddReview() {
     const parsedRating = parseFloat(rating).toFixed(2);
 
     const newReview = {
-        wineId: wineId,
+      wineId: wineId,
       display_name: "Placeholder Wine display name", // Can replace this with additional fetch logic
       wine: "Placeholder Wine Name",
       notes,
@@ -52,26 +64,54 @@ export default function AddReview() {
   }
 
   return (
-    <div style={{ padding: 20 }}>
-      <h1>Add a Review</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Notes:</label>
-          <textarea value={notes} onChange={(e) => setNotes(e.target.value)} />
-        </div>
-        <div>
-          <label>Rating (0-10):</label>
-          <input
-            type="number"
-            value={rating}
-            onChange={(e) => setRating(e.target.value)}
-          />
-        </div>
-        <button type="submit">Add Review</button>
-        <button type="button" onClick={() => router.push("/")}>
-          Cancel
-        </button>
-      </form>
-    </div>
+    <Container style={{ marginTop: "20px" }}>
+      <Card>
+        <CardContent>
+          <Typography variant="h4" gutterBottom>
+            Add a Review
+          </Typography>
+          <form onSubmit={handleSubmit}>
+            <Box mb={2}>
+              <TextField
+                label="Notes"
+                variant="outlined"
+                fullWidth
+                multiline
+                minRows={4}
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+              />
+            </Box>
+            <Box mb={2}>
+              <TextField
+                label="Rating (0-10)"
+                variant="outlined"
+                type="number"
+                fullWidth
+                value={rating}
+                onChange={(e) => setRating(e.target.value)}
+                inputProps={{
+                  min: 0,
+                  max: 10,
+                  step: 0.1,
+                }}
+              />
+            </Box>
+            <Box display="flex" justifyContent="space-between">
+              <Button variant="contained" color="primary" type="submit">
+                Add Review
+              </Button>
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={() => router.push("/")}
+              >
+                Cancel
+              </Button>
+            </Box>
+          </form>
+        </CardContent>
+      </Card>
+    </Container>
   );
 }

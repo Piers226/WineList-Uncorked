@@ -1,5 +1,16 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import {
+  Container,
+  Typography,
+  Card,
+  CardContent,
+  Box,
+  Grid,
+  Divider,
+  CircularProgress,
+  Alert,
+} from "@mui/material";
 
 export default function WineDetails() {
   const router = useRouter();
@@ -32,33 +43,84 @@ export default function WineDetails() {
     fetchWineDetails();
   }, [id]);
 
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
-  if (!wine) return <p>Loading...</p>;
+  if (error)
+    return (
+      <Container sx={{ mt: 4 }}>
+        <Alert severity="error">{error}</Alert>
+      </Container>
+    );
+
+  if (!wine)
+    return (
+      <Container sx={{ mt: 4, textAlign: "center" }}>
+        <CircularProgress />
+      </Container>
+    );
 
   return (
-    <div style={{ padding: 20 }}>
-      <h1>{wine.display_name}</h1>
-      <p><strong>Producer:</strong> {wine.producer_name}</p>
-      <p><strong>Wine:</strong> {wine.wine}</p>
-      <p><strong>Country:</strong> {wine.country}</p>
-      <p><strong>Region:</strong> {wine.region}</p>
-      <p><strong>Sub-Region:</strong> {wine.sub_region}</p>
-      <p><strong>Color:</strong> {wine.color}</p>
-      <p><strong>Type:</strong> {wine.type}</p>
-      <p><strong>Rating:</strong> {wine.rating}</p>
-      <p><strong>Notes:</strong> {wine.general_notes}</p>
+    <Container sx={{ mt: 4 }}>
+      {/* Wine Details */}
+      <Card>
+        <CardContent>
+          <Typography variant="h4" gutterBottom>
+            {wine.display_name}
+          </Typography>
+          <Typography variant="body1">
+            <strong>Producer:</strong> {wine.producer_name || "N/A"}
+          </Typography>
+          <Typography variant="body1">
+            <strong>Wine:</strong> {wine.wine || "N/A"}
+          </Typography>
+          <Typography variant="body1">
+            <strong>Country:</strong> {wine.country || "N/A"}
+          </Typography>
+          <Typography variant="body1">
+            <strong>Region:</strong> {wine.region || "N/A"}
+          </Typography>
+          <Typography variant="body1">
+            <strong>Sub-Region:</strong> {wine.sub_region || "N/A"}
+          </Typography>
+          <Typography variant="body1">
+            <strong>Color:</strong> {wine.color || "N/A"}
+          </Typography>
+          <Typography variant="body1">
+            <strong>Type:</strong> {wine.type || "N/A"}
+          </Typography>
+          <Typography variant="body1">
+            <strong>Rating:</strong> {wine.rating ? `${wine.rating}/10` : "N/A"}
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            <strong>Notes:</strong> {wine.general_notes || "No notes provided."}
+          </Typography>
+        </CardContent>
+      </Card>
 
-      <h2>Reviews</h2>
-      {reviews.length > 0 ? (
-        reviews.map((review) => (
-          <div key={review._id} style={{ marginBottom: "10px" }}>
-            <p><strong>{review.username}:</strong> {review.notes}</p>
-            <p><strong>Rating:</strong> {review.rating}/10</p>
-          </div>
-        ))
-      ) : (
-        <p>No reviews yet.</p>
-      )}
-    </div>
+      {/* Reviews Section */}
+      <Box mt={4}>
+        <Typography variant="h5" gutterBottom>
+          Reviews
+        </Typography>
+        {reviews.length > 0 ? (
+          <Grid container spacing={2}>
+            {reviews.map((review) => (
+              <Grid item xs={12} key={review._id}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="body1">
+                      <strong>{review.username}:</strong> {review.notes}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      Rating: {review.rating}/10
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        ) : (
+          <Typography>No reviews yet.</Typography>
+        )}
+      </Box>
+    </Container>
   );
 }

@@ -1,7 +1,8 @@
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import GoogleButton from 'react-google-button';
+import { Button, Container, Typography, Card, CardContent, Grid, AppBar, Toolbar, Box } from "@mui/material";
+import GoogleButton from "react-google-button";
 import Link from "next/link";
 
 export default function Home() {
@@ -32,57 +33,128 @@ export default function Home() {
     });
     if (res.ok) {
       setSavedWineIds([...savedWineIds, wineId]);
-      //alert("Wine saved!");
-    } else {
-      //alert("Error saving wine");
     }
   }
 
   return (
-    <div style={{ padding: 20 }}>
-      <h1>Wine Reviewer</h1>
-      {!session ? (
-        <GoogleButton onClick={() => signIn('google')} />
-      ) : (
-        <div>
-          <p>Logged in as {session.user.name}</p>
-          <button onClick={() => signOut()}>Sign Out</button>
-          <div>
-            <h1>Menu</h1>
-            <ul>
-              <li>
-                <Link href="/addWine">Add a Wine</Link>
-              </li>
-              <li>
-                <Link href="/savedWines">View Your Saved Wines</Link>
-              </li>
-              <li>
-                <Link href="/searchWines">Search Wines</Link>
-              </li>
-              <li>
-                <Link href="/topWines">View Top Rated Wines</Link>
-              </li>
-            </ul>
-          </div>
-          <h2>Recently added</h2>
-          {wines.map((wine) => (
-            <div key={wine._id} style={{ marginBottom: "10px", padding: "0 20px" }}>
-              <strong>{wine.display_name}</strong> - {wine.wine} - {wine.region} ({wine.rating})
-              <button onClick={() => router.push(`/wines/${wine._id}`)} style={{ marginLeft: "10px" }}>
-                View Details
-              </button>
-              {savedWineIds.includes(wine._id) ? (
-                <span style={{ color: "green" }}> ✔</span>
-              ) : (
-                <button onClick={() => saveWine(wine._id)}>Save</button>
-              )}
-              <button onClick={() => router.push(`/addReview?wineId=${wine._id}`)}>
-                Add Review
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+    <Box>
+      {/* Navigation Bar */}
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            Wine Reviewer
+          </Typography>
+          {!session ? (
+            <Button color="inherit" onClick={() => signIn("google")}>
+              Sign In
+            </Button>
+          ) : (
+            <Button color="inherit" onClick={() => signOut()}>
+              Sign Out
+            </Button>
+          )}
+        </Toolbar>
+      </AppBar>
+
+      {/* Main Content */}
+      <Container sx={{ mt: 4 }}>
+        {!session ? (
+          <Box textAlign="center">
+            <Typography variant="h5" gutterBottom>
+              Welcome to Wine Reviewer
+            </Typography>
+            <GoogleButton onClick={() => signIn("google")} />
+          </Box>
+        ) : (
+          <>
+            <Typography variant="h4" gutterBottom>
+              Welcome, {session.user.name}!
+            </Typography>
+
+            {/* Menu */}
+            <Typography variant="h5" gutterBottom>
+              Menu
+            </Typography>
+            <Grid container spacing={2} sx={{ mb: 4 }}>
+              <Grid item>
+                <Button variant="contained" onClick={() => router.push("/addWine")}>
+                  Add a Wine
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button variant="contained" onClick={() => router.push("/savedWines")}>
+                  View Your Saved Wines
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button variant="contained" onClick={() => router.push("/searchWines")}>
+                  Search Wines
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button variant="contained" onClick={() => router.push("/topWines")}>
+                  View Top Rated Wines
+                </Button>
+              </Grid>
+            </Grid>
+
+            {/* Recently Added Wines */}
+            <Typography variant="h5" gutterBottom>
+              Recently Added Wines
+            </Typography>
+            <Grid container spacing={3}>
+              {wines.map((wine) => (
+                <Grid item xs={12} sm={6} md={4} key={wine._id}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        {wine.display_name}
+                      </Typography>
+                      <Typography color="textSecondary">{wine.wine}</Typography>
+                      <Typography variant="body2">Region: {wine.region || "Unknown"}</Typography>
+                      <Typography variant="body2" gutterBottom>
+                        Rating: {wine.rating || "N/A"}
+                      </Typography>
+                      <Box mt={2}>
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          onClick={() => router.push(`/wines/${wine._id}`)}
+                          sx={{ mr: 1 }}
+                        >
+                          View Details
+                        </Button>
+                        {savedWineIds.includes(wine._id) ? (
+                          <Button variant="contained" size="small" disabled>
+                            Saved ✔
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="contained"
+                            size="small"
+                            onClick={() => saveWine(wine._id)}
+                            sx={{ mr: 1 }}
+                          >
+                            Save
+                          </Button>
+                        )}
+                        <Button
+                          variant="contained"
+                          size="small"
+                          color="secondary"
+                          onClick={() => router.push(`/addReview?wineId=${wine._id}`)}
+                        >
+                          Add Review
+                        </Button>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          </>
+        )}
+      </Container>
+    </Box>
   );
 }
