@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 export default function SavedWines() {
   const [savedWines, setSavedWines] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
     fetchSavedWines();
@@ -35,6 +37,9 @@ export default function SavedWines() {
           <li key={wine._id}>
             <strong>{wine.display_name}</strong> - {wine.wine} - {wine.region} ({wine.rating})
             <button onClick={() => removeWine(wine._id)}>Remove</button>
+            <button onClick={() => router.push(`/addReview?wineId=${wine._id}`)}>
+                Add Review
+              </button>
           </li>
         ))}
       </ul>

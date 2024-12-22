@@ -10,6 +10,7 @@ export default async function handler(req, res) {
     $or: [
       { display_name: { $regex: query, $options: "i" } }, // case-insensitive search
       { wine: { $regex: query, $options: "i" } },
+      {producer_name: { $regex: query, $options: "i" } }
     ],
   });
 

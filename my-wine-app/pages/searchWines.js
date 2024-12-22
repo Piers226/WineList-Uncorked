@@ -1,10 +1,12 @@
 // pages/searchWines.js
 import { useState } from "react";
+import { useRouter } from "next/router";
 
 export default function SearchWines() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [savedWineIds, setSavedWineIds] = useState([]);
+  const router = useRouter();
 
   async function search() {
     const res = await fetch(`/api/wines/search?query=${query}`);
@@ -23,6 +25,7 @@ export default function SearchWines() {
       body: JSON.stringify({ wineId }),
     });
     if (res.ok) {
+        setSavedWineIds([...savedWineIds, wineId]);
       //alert("Wine saved!");
     } else {
       alert("Error saving wine");
@@ -34,9 +37,10 @@ export default function SearchWines() {
       <h1>Search Wines</h1>
       <input
         type="text"
-        placeholder="Search by name or grape"
+        placeholder="Search by Display Name, Wine, or Producer"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
+        size = "50"
       />
       <button onClick={search}>Search</button>
 
@@ -49,6 +53,9 @@ export default function SearchWines() {
               ) : (
                 <button onClick={() => saveWine(wine._id)}>Save</button>
               )}
+              <button onClick={() => router.push(`/addReview?wineId=${wine._id}`)}>
+                Add Review
+              </button>
           </li>
         ))}
       </ul>

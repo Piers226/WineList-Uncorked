@@ -69,7 +69,8 @@ export default function AddWine() {
     if (res.ok) {
       router.push("/");
     } else {
-      alert("Error adding wine");
+      const errorData = await res.json(); // Parse the JSON response
+      alert(errorData.error || "An unknown error occurred"); // Show the error message or a fallback
     }
   }
 

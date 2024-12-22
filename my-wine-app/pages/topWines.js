@@ -1,9 +1,11 @@
 // pages/topWines.js
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 export default function TopWines() {
   const [wines, setWines] = useState([]);
   const [savedWineIds, setSavedWineIds] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
     fetch("/api/wines/top")
@@ -22,11 +24,13 @@ export default function TopWines() {
       body: JSON.stringify({ wineId }),
     });
     if (res.ok) {
+        setSavedWineIds([...savedWineIds, wineId]);
       //alert("Wine saved!");
     } else {
       alert("Error saving wine");
     }
   }
+
 
   return (
     <div>
@@ -40,6 +44,9 @@ export default function TopWines() {
               ) : (
                 <button onClick={() => saveWine(wine._id)}>Save</button>
               )}
+              <button onClick={() => router.push(`/addReview?wineId=${wine._id}`)}>
+                Add Review
+              </button>
           </li>
         ))}
       </ul>

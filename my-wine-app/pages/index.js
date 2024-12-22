@@ -68,6 +68,9 @@ export default function Home() {
           {wines.map((wine) => (
             <div key={wine._id} style={{ marginBottom: "10px", padding: "0 20px" }}>
               <strong>{wine.display_name}</strong> - {wine.wine} - {wine.region} ({wine.rating})
+              <button onClick={() => router.push(`/wines/${wine._id}`)} style={{ marginLeft: "10px" }}>
+                View Details
+              </button>
               {savedWineIds.includes(wine._id) ? (
                 <span style={{ color: "green" }}> ✔</span>
               ) : (

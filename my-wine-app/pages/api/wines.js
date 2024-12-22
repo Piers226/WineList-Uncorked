@@ -1,4 +1,3 @@
-// pages/api/wines.js
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "./auth/[...nextauth]";
 import { connectToDB } from "../../lib/mongodb";
@@ -8,14 +7,14 @@ import User from "../../models/User";
 export default async function handler(req, res) {
   const session = await getServerSession(req, res, authOptions);
   await connectToDB();
-  
+
   if (req.method === "GET") {
     try {
       const wines = await Wine.find({
-        display_name: { 
+        display_name: {
           $exists: true, // Ensure the field exists
-          $nin: [null, "", 'NaN'] // Exclude null, empty string, and the string "NaN"
-        }
+          $nin: [null, "", "NaN"], // Exclude null, empty string, and the string "NaN"
+        },
       })
         .sort({ createdAt: -1 }) // Sort by newest first
         .limit(50); // Limit to 50 results
@@ -48,7 +47,29 @@ export default async function handler(req, res) {
       rating,
     } = req.body;
 
+    // Validate required fields
+    if (!display_name || !producer_name || !wine || !country || !region) {
+      return res
+        .status(400)
+        .json({ error: "Display Name, Producer Name, Wine, Country, and Region are required!" });
+    }
+
     try {
+      // Check if a wine with the same details already exists
+      const existingWine = await Wine.findOne({
+        display_name,
+        producer_name,
+        wine,
+        country,
+        region,
+      });
+
+      if (existingWine) {
+        return res.status(400).json({
+          error: "A wine with these details already exists in the database!",
+        });
+      }
+
       // Create a new wine entry
       const newWine = new Wine({
         display_name,
