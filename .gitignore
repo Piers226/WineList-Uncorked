@@ -128,3 +128,9 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# .py upload files
+wineUpload.py
+sample.py
+LWINdatabase.csv
+LWINdatabase.xlsx
