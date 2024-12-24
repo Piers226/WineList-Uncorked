@@ -77,22 +77,22 @@ export default function Home() {
             </Typography>
             <Grid container spacing={2} sx={{ mb: 4 }}>
               <Grid item>
-                <Button variant="contained" onClick={() => router.push("/addWine")}>
+                <Button variant="contained" color="secondary" onClick={() => router.push("/addWine")}>
                   Add a Wine
                 </Button>
               </Grid>
               <Grid item>
-                <Button variant="contained" onClick={() => router.push("/savedWines")}>
-                  View Your Saved Wines
+                <Button variant="contained" color="secondary" onClick={() => router.push("/savedWines")}>
+                  View Your Wine List
                 </Button>
               </Grid>
               <Grid item>
-                <Button variant="contained" onClick={() => router.push("/searchWines")}>
+                <Button variant="contained" color="secondary" onClick={() => router.push("/searchWines")}>
                   Search Wines
                 </Button>
               </Grid>
               <Grid item>
-                <Button variant="contained" onClick={() => router.push("/topWines")}>
+                <Button variant="contained" color="secondary" onClick={() => router.push("/topWines")}>
                   View Top Rated Wines
                 </Button>
               </Grid>
@@ -126,7 +126,7 @@ export default function Home() {
                         </Button>
                         {savedWineIds.includes(wine._id) ? (
                           <Button variant="contained" size="small" disabled>
-                            Saved ✔
+                             ✔
                           </Button>
                         ) : (
                           <Button

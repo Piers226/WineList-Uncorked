@@ -9,18 +9,23 @@ import {
   Card,
   CardContent,
   Box,
+  Pagination,
 } from "@mui/material";
 
 export default function SearchWines() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [savedWineIds, setSavedWineIds] = useState([]);
+  const [page, setPage] = useState(1); // Current page
+  const [totalPages, setTotalPages] = useState(1); // Total pages
   const router = useRouter();
+  const limit = 10; // Number of results per page
 
-  async function search() {
-    const res = await fetch(`/api/wines/search?query=${query}`);
+  async function fetchSearchResults(pageNumber = 1) {
+    const res = await fetch(`/api/wines/search?query=${query}&page=${pageNumber}&limit=${limit}`);
     const data = await res.json();
-    setResults(data);
+    setResults(data.wines); // Assuming the backend sends `wines` and `totalPages`
+    setTotalPages(data.totalPages);
 
     // Fetch user's saved wines
     const savedRes = await fetch("/api/users/savedWines");
@@ -41,6 +46,11 @@ export default function SearchWines() {
     }
   }
 
+  function handlePageChange(event, value) {
+    setPage(value);
+    fetchSearchResults(value);
+  }
+
   return (
     <Container sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>
@@ -54,65 +64,77 @@ export default function SearchWines() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
-        <Button variant="contained" color="primary" onClick={search}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => fetchSearchResults(1)} // Reset to page 1 on new search
+        >
           Search
         </Button>
       </Box>
 
       {results.length > 0 ? (
-        <Grid container spacing={2}>
-          {results.map((wine) => (
-            <Grid item xs={12} sm={6} md={4} key={wine._id}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6">{wine.display_name}</Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    <strong>Wine:</strong> {wine.wine || "N/A"}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    <strong>Region:</strong> {wine.region || "N/A"}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    <strong>Rating:</strong>{" "}
-                    {wine.rating ? `${wine.rating}/10` : "N/A"}
-                  </Typography>
-                  <Box mt={2} display="flex" justifyContent="space-between">
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      onClick={() => router.push(`/wines/${wine._id}`)}
-                      sx={{ mr: 1 }}
-                    >
-                      View Details
-                    </Button>
-                    {savedWineIds.includes(wine._id) ? (
-                      <Button variant="outlined" disabled>
-                        Saved ✔
+        <>
+          <Grid container spacing={2}>
+            {results.map((wine) => (
+              <Grid item xs={12} sm={6} md={4} key={wine._id}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="h6">{wine.display_name}</Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      <strong>Wine:</strong> {wine.wine || "N/A"}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      <strong>Region:</strong> {wine.region || "N/A"}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      <strong>Rating:</strong> {wine.rating ? `${wine.rating}/10` : "N/A"}
+                    </Typography>
+                    <Box mt={2} display="flex" justifyContent="space-between">
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={() => router.push(`/wines/${wine._id}`)}
+                        sx={{ mr: 1 }}
+                      >
+                        View Details
                       </Button>
-                    ) : (
+                      {savedWineIds.includes(wine._id) ? (
+                        <Button variant="outlined" disabled>
+                          Saved ✔
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          onClick={() => saveWine(wine._id)}
+                        >
+                          Save
+                        </Button>
+                      )}
                       <Button
                         variant="contained"
-                        color="secondary"
-                        onClick={() => saveWine(wine._id)}
+                        color="primary"
+                        onClick={() => router.push(`/addReview?wineId=${wine._id}`)}
                       >
-                        Save
+                        Add Review
                       </Button>
-                    )}
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() =>
-                        router.push(`/addReview?wineId=${wine._id}`)
-                      }
-                    >
-                      Add Review
-                    </Button>
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+
+          <Box mt={4} display="flex" justifyContent="center">
+            <Pagination
+              count={totalPages}
+              page={page}
+              onChange={handlePageChange}
+              color="primary"
+            />
+          </Box>
+        </>
       ) : (
         <Typography variant="body1" color="textSecondary">
           No results found. Try a different search query.

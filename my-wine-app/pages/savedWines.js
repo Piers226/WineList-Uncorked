@@ -3,12 +3,16 @@ import { useRouter } from "next/router";
 import {
   Container,
   Typography,
-  Card,
-  CardContent,
-  Button,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+  IconButton,
   Box,
-  Grid,
 } from "@mui/material";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import AddCommentIcon from "@mui/icons-material/AddComment";
 
 export default function SavedWines() {
   const [savedWines, setSavedWines] = useState([]);
@@ -47,42 +51,53 @@ export default function SavedWines() {
         Your Saved Wines
       </Typography>
       {savedWines.length > 0 ? (
-        <Grid container spacing={2}>
-          {savedWines.map((wine) => (
-            <Grid item xs={12} md={6} lg={4} key={wine._id}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6">{wine.display_name}</Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    <strong>Wine:</strong> {wine.wine || "N/A"}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    <strong>Region:</strong> {wine.region || "N/A"}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    <strong>Rating:</strong> {wine.rating ? `${wine.rating}/10` : "N/A"}
-                  </Typography>
-                  <Box mt={2} display="flex" justifyContent="space-between">
-                    <Button
-                      variant="outlined"
-                      color="secondary"
-                      onClick={() => removeWine(wine._id)}
-                    >
-                      Remove
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => router.push(`/addReview?wineId=${wine._id}`)}
-                    >
-                      Add Review
-                    </Button>
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
+        <List>
+          {savedWines.map((wine, index) => (
+            <ListItem
+              key={wine._id}
+              divider
+              sx={{
+                padding: "16px",
+                backgroundColor: index % 2 === 0 ? "#f9f9f9" : "#ffffff",
+              }}
+            >
+              <Box sx={{ mr: 2, fontWeight: "bold", fontSize: "1.25rem" }}>
+                {index + 1}.
+              </Box>
+              <ListItemText
+                primary={wine.display_name}
+                secondary={`Wine: ${wine.wine || "N/A"} | Region: ${
+                  wine.region || "N/A"
+                } | Rating: ${wine.rating ? `${wine.rating}/10` : "N/A"}`}
+              />
+              <ListItemSecondaryAction>
+                <IconButton
+                  edge="end"
+                  color="primary"
+                  onClick={() => router.push(`/wines/${wine._id}`)}
+                  sx={{ mr: 1 }}
+                >
+                  <VisibilityIcon />
+                </IconButton>
+                <IconButton
+                  edge="end"
+                  color="secondary"
+                  onClick={() => router.push(`/addReview?wineId=${wine._id}`)}
+                  sx={{ mr: 1 }}
+                >
+                  <AddCommentIcon />
+                </IconButton>
+                <IconButton
+                  edge="end"
+                  color="error"
+                  onClick={() => removeWine(wine._id)}
+                >
+                  <DeleteForeverIcon />
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
           ))}
-        </Grid>
+        </List>
       ) : (
         <Typography variant="body1" color="textSecondary">
           No saved wines found.

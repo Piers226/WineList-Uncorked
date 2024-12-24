@@ -74,6 +74,14 @@ export default function TopWines() {
                     {wine.rating ? `${wine.rating}/10` : "N/A"}
                   </Typography>
                   <Box mt={2} display="flex" justifyContent="space-between">
+                  <Button
+                          variant="outlined"
+                          size="small"
+                          onClick={() => router.push(`/wines/${wine._id}`)}
+                          sx={{ mr: 1 }}
+                        >
+                          View Details
+                        </Button>
                     {savedWineIds.includes(wine._id) ? (
                       <Button variant="outlined" disabled>
                         Saved ✔
