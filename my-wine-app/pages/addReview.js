@@ -104,7 +104,7 @@ export default function AddReview() {
               <Button
                 variant="outlined"
                 color="secondary"
-                onClick={() => router.push("/")}
+                onClick={() => router.back()}
               >
                 Cancel
               </Button>

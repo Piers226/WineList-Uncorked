@@ -97,16 +97,16 @@ export default function SearchWines() {
                         onClick={() => router.push(`/wines/${wine._id}`)}
                         sx={{ mr: 1 }}
                       >
-                        View Details
+                        View
                       </Button>
                       {savedWineIds.includes(wine._id) ? (
                         <Button variant="outlined" disabled>
-                          Saved ✔
+                          ✔
                         </Button>
                       ) : (
                         <Button
                           variant="contained"
-                          color="secondary"
+                          color="primary"
                           onClick={() => saveWine(wine._id)}
                         >
                           Save
@@ -114,7 +114,7 @@ export default function SearchWines() {
                       )}
                       <Button
                         variant="contained"
-                        color="primary"
+                        color="secondary"
                         onClick={() => router.push(`/addReview?wineId=${wine._id}`)}
                       >
                         Add Review

@@ -13,7 +13,11 @@ export default async function handler(req, res) {
   
     if (req.method === 'GET') {
       // Fetch saved wines
-      const user = await User.findOne({ userId: session.userId }).populate("savedWines");
+      const user = await User.findOne({ userId: session.userId })
+      .populate({
+        path: "savedWines",
+        options: { sort: { rating: -1 } }, // Sort saved wines by rating in descending order
+      });
       if (!user) return res.status(404).json({ error: "User not found" });
       return res.status(200).json(user.savedWines);
     }

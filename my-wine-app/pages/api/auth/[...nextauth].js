@@ -42,6 +42,10 @@ export const authOptions = {
       return session; // Return the modified session object
     },
   },
+  session: {
+    strategy: "jwt", // Use JSON Web Tokens (default)
+    maxAge: 30*60, // 30 minutes in seconds
+  },
   secret: process.env.NEXTAUTH_SECRET, // Add this if not already included
 };
 

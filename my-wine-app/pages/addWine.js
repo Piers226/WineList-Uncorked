@@ -216,7 +216,7 @@ export default function AddWine() {
               <Button
                 variant="outlined"
                 color="secondary"
-                onClick={() => router.push("/")}
+                onClick={() => router.back()}
               >
                 Cancel
               </Button>

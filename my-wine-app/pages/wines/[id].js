@@ -10,6 +10,7 @@ import {
   Divider,
   CircularProgress,
   Alert,
+  Button,
 } from "@mui/material";
 
 export default function WineDetails() {
@@ -121,6 +122,13 @@ export default function WineDetails() {
           <Typography>No reviews yet.</Typography>
         )}
       </Box>
+      <Button
+        variant="outlined"
+        color="secondary"
+        onClick={() => router.back()}
+      >
+       Back
+      </Button>
     </Container>
   );
 }

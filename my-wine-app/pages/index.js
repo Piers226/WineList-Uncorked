@@ -2,8 +2,7 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Button, Container, Typography, Card, CardContent, Grid, AppBar, Toolbar, Box } from "@mui/material";
-import GoogleButton from "react-google-button";
-import Link from "next/link";
+
 
 export default function Home() {
   const { data: session } = useSession();
@@ -12,6 +11,7 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
+    
     if (session) {
       // Fetch all wines
       fetch("/api/wines")
@@ -60,11 +60,65 @@ export default function Home() {
       <Container sx={{ mt: 4 }}>
         {!session ? (
           <Box textAlign="center">
-            <Typography variant="h5" gutterBottom>
-              Welcome to Uncorked
-            </Typography>
-            <GoogleButton onClick={() => signIn("google")} />
-          </Box>
+          <Typography variant="h2" gutterBottom>
+            Welcome to Uncorked
+          </Typography>
+          <Typography variant="h5" color="textSecondary" gutterBottom>
+            Discover, Review, and Save Your Favorite Wines.
+          </Typography>
+          <Typography variant="body1" color="textSecondary" sx={{ mb: 4 }}>
+            Uncorked is your personal wine companion. Explore top-rated wines, share your reviews, and build your own wine list. Sign in to get started!
+          </Typography>
+          <Button
+            variant="contained"
+            color="secondary"
+            size="large"
+            onClick={() => signIn("google")}
+            sx={{ mb: 4 }}
+          >
+            Sign In with Google
+          </Button>
+
+          {/* Highlights Section */}
+          <Grid container spacing={4} justifyContent="center">
+            <Grid item xs={12} sm={6} md={4}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    Explore Wines
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Browse an extensive library of wines and find your next favorite bottle.
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    Save Your List
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Keep track of wines you love and build your personal wine collection.
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    Share Reviews
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Rate and review wines to help others discover great options.
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+        </Box>
         ) : (
           <>
             <Typography variant="h4" gutterBottom>
@@ -122,7 +176,7 @@ export default function Home() {
                           onClick={() => router.push(`/wines/${wine._id}`)}
                           sx={{ mr: 1 }}
                         >
-                          View Details
+                          View
                         </Button>
                         {savedWineIds.includes(wine._id) ? (
                           <Button variant="contained" size="small" disabled>

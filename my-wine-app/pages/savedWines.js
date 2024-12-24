@@ -1,18 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import {
-  Container,
-  Typography,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction,
-  IconButton,
-  Box,
-} from "@mui/material";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import AddCommentIcon from "@mui/icons-material/AddComment";
+import { Container, Typography, Grid, Box, List, ListItem, ListItemText, Button } from "@mui/material";
 
 export default function SavedWines() {
   const [savedWines, setSavedWines] = useState([]);
@@ -45,64 +33,81 @@ export default function SavedWines() {
     }
   }
 
+  // Group wines by color
+  const groupedWines = savedWines.reduce((groups, wine) => {
+    const color = wine.color || "Unknown";
+    if (!groups[color]) groups[color] = [];
+    groups[color].push(wine);
+    return groups;
+  }, {});
+
   return (
-    <Container sx={{ mt: 4 }}>
+    <Container maxWidth={false} sx={{ mt: 4, px: 4 }}>
       <Typography variant="h4" gutterBottom>
-        Your Saved Wines
+        Your Wine List
       </Typography>
-      {savedWines.length > 0 ? (
-        <List>
-          {savedWines.map((wine, index) => (
-            <ListItem
-              key={wine._id}
-              divider
-              sx={{
-                padding: "16px",
-                backgroundColor: index % 2 === 0 ? "#f9f9f9" : "#ffffff",
-              }}
-            >
-              <Box sx={{ mr: 2, fontWeight: "bold", fontSize: "1.25rem" }}>
-                {index + 1}.
+      <Grid container spacing={4}>
+        {Object.keys(groupedWines).length > 0 ? (
+          Object.keys(groupedWines).map((color) => (
+            <Grid item xs={12} md={6} lg={3} key={color}>
+              <Box>
+                <Typography variant="h5" gutterBottom>
+                  {color} Wines
+                </Typography>
+                <List>
+                  {groupedWines[color].map((wine, index) => (
+                    <ListItem key={wine._id} divider>
+                      <ListItemText
+                        primary={`${index + 1}. ${wine.display_name}`}
+                        secondary={
+                          <>
+                            <span><strong>Wine:</strong> {wine.wine || "N/A"}</span>
+                            <br />
+                            <span><strong>Region:</strong> {wine.region || "N/A"}</span>
+                            <br />
+                            <span><strong>Rating:</strong> {wine.rating ? `${wine.rating}/10` : "N/A"}</span>
+                          </>
+                        }
+                      />
+                      <Box>
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          sx={{ mr: 1 }}
+                          onClick={() => router.push(`/wines/${wine._id}`)}
+                        >
+                          View
+                        </Button>
+                        <Button
+                          variant="contained"
+                          size="small"
+                          color="primary"
+                          onClick={() => removeWine(wine._id)}
+                        >
+                          Remove
+                        </Button>
+                        <Button
+                          variant="contained"
+                          size="small"
+                          color="secondary"
+                          sx={{ mr: 1 }}
+                          onClick={() => router.push(`/addReview?wineId=${wine._id}`)}
+                        >
+                          Review
+                        </Button>     
+                      </Box>
+                    </ListItem>
+                  ))}
+                </List>
               </Box>
-              <ListItemText
-                primary={wine.display_name}
-                secondary={`Wine: ${wine.wine || "N/A"} | Region: ${
-                  wine.region || "N/A"
-                } | Rating: ${wine.rating ? `${wine.rating}/10` : "N/A"}`}
-              />
-              <ListItemSecondaryAction>
-                <IconButton
-                  edge="end"
-                  color="primary"
-                  onClick={() => router.push(`/wines/${wine._id}`)}
-                  sx={{ mr: 1 }}
-                >
-                  <VisibilityIcon />
-                </IconButton>
-                <IconButton
-                  edge="end"
-                  color="secondary"
-                  onClick={() => router.push(`/addReview?wineId=${wine._id}`)}
-                  sx={{ mr: 1 }}
-                >
-                  <AddCommentIcon />
-                </IconButton>
-                <IconButton
-                  edge="end"
-                  color="error"
-                  onClick={() => removeWine(wine._id)}
-                >
-                  <DeleteForeverIcon />
-                </IconButton>
-              </ListItemSecondaryAction>
-            </ListItem>
-          ))}
-        </List>
-      ) : (
-        <Typography variant="body1" color="textSecondary">
-          No saved wines found.
-        </Typography>
-      )}
+            </Grid>
+          ))
+        ) : (
+          <Typography variant="body1" color="textSecondary">
+            No saved wines found.
+          </Typography>
+        )}
+      </Grid>
     </Container>
   );
 }
